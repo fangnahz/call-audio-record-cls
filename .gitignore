@@ -13,6 +13,7 @@ wheels/
 *.env
 
 # Cache / temporary / log files etc
+.DS_Store
 *.log
 output/
 .pytest_cache/
