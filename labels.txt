@@ -1,0 +1,2 @@
+# TODO: add the customer intent label definitions for the LLM prompt.
+# Keep one label definition per line or replace this file with a structured format later.
