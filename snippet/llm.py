@@ -6,7 +6,7 @@ from volcenginesdkarkruntime import Ark
 
 load_dotenv()
 
-api_key = os.getenv('ARK_API_KEY')
+api_key = os.getenv('LLM_API_KEY')
 
 client = Ark(
     base_url='https://ark.cn-beijing.volces.com/api/v3',
@@ -83,4 +83,37 @@ response = client.responses.create(
     ]
 )
 
+
+def get_doubao_seed_2_0_pro_price(input_tokens: int, output_tokens: int) -> tuple[float, str]:
+    """计算调用doubao-seed-2.0-pro模型的价格
+
+    输入价格：
+    输入小于≤32k: 0.0032 元/千tokens
+    32k<输入<=128K: 0.0048 元/千tokens
+    128k<输入<=256K: 0.0096 元/千tokens
+
+    输出价格：
+    输入小于≤32k: 0.0160 元/千tokens
+    32k<输入<=128K: 0.0240 元/千tokens
+    128k<输入<=256K: 0.0480 元/千tokens
+    """
+    if input_tokens <= 32000:
+        input_price = 0.0032 / 1000
+    elif input_tokens <= 128000:
+        input_price = 0.0048 / 1000
+    else:
+        input_price = 0.0096 / 1000
+
+    if output_tokens <= 32000:
+        output_price = 0.0160 / 1000
+    elif output_tokens <= 128000:
+        output_price = 0.0240 / 1000
+    else:
+        output_price = 0.0480 / 1000
+
+    return input_price * input_tokens + output_price * output_tokens, "元"
+
+
 print(response.model_dump_json())
+
+import ipdb; ipdb.set_trace()

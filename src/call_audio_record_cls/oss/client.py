@@ -126,7 +126,7 @@ class OssClient:
     async def write_csv(self, path: Path, rows: list[ClassificationResult]) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         lines = [
-            "oss_path,transcript,label,confidence,reason,intent_city,purchase_timeline,intent_model"
+            "oss_path,transcript,label,confidence,reason,intent_city,purchase_timeline,intent_model,llm_cost"
         ]
         for row in rows:
             values = [
@@ -138,6 +138,7 @@ class OssClient:
                 json.dumps(row.intent_city, ensure_ascii=False),
                 json.dumps(row.purchase_timeline, ensure_ascii=False),
                 json.dumps(row.intent_model, ensure_ascii=False),
+                json.dumps(row.llm_cost, ensure_ascii=False),
             ]
             lines.append(",".join(values))
         path.write_text("\n".join(lines) + "\n", encoding="utf-8")

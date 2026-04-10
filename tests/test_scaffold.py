@@ -13,7 +13,7 @@ def test_oss_key_mapping() -> None:
     client = OssClient(get_settings().oss)
     source = "zhongqi-changcheng-recordings/audio-1_48k_1ch.mp3"
     assert client.build_asr_key(source) == "zhongqi-changcheng-asr/audio-1_48k_1ch.json"
-    assert client.build_llm_key(source) == "zhongqi-changcheng-llm-v2/audio-1_48k_1ch.json"
+    assert client.build_llm_key(source) == "zhongqi-changcheng-llm-v3/audio-1_48k_1ch.json"
 
 
 class _FakePage:

@@ -66,6 +66,7 @@ class ClassificationResult(BaseModel):
     intent_city: str = ""
     purchase_timeline: str = ""
     intent_model: str = ""
+    llm_cost: str = ""
 
 
 class PipelineFailure(BaseModel):

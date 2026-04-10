@@ -18,7 +18,7 @@ class _RunnerFakeOssClient:
         ]
         self._existing = {
             "zhongqi-changcheng-asr/audio-1_48k_1ch.json",
-            "zhongqi-changcheng-llm-v2/audio-2_16k_2ch.json",
+            "zhongqi-changcheng-llm-v3/audio-2_16k_2ch.json",
         }
         self.written_json: dict[str, dict] = {}
 
@@ -60,7 +60,7 @@ class _RunnerFakeOssClient:
     def build_llm_key(self, audio_key: str) -> str:
         return audio_key.replace(
             "zhongqi-changcheng-recordings/",
-            "zhongqi-changcheng-llm-v2/",
+            "zhongqi-changcheng-llm-v3/",
         ).replace(".mp3", ".json")
 
     def parse_audio_object(self, key: str):
@@ -121,4 +121,4 @@ async def test_runner_reuses_existing_asr_and_skips_existing_llm(tmp_path: Path)
     assert summary.skipped == 1
     assert asr_client.calls == 0
     assert llm_client.calls == 1
-    assert "zhongqi-changcheng-llm-v2/audio-1_48k_1ch.json" in oss_client.written_json
+    assert "zhongqi-changcheng-llm-v3/audio-1_48k_1ch.json" in oss_client.written_json

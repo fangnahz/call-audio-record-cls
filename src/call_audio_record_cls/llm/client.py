@@ -101,6 +101,7 @@ class LlmClient:
             parsed.get("purchase_timeline")
         )
         parsed["intent_model"] = self._normalize_optional_field(parsed.get("intent_model"))
+        parsed["llm_cost"] = self._format_llm_cost(response)
         parsed.pop("audio_file", None)
         return ClassificationResult.model_validate(parsed)
 
@@ -272,6 +273,49 @@ class LlmClient:
         if isinstance(value, str):
             return value.strip()
         return str(value).strip()
+
+    def _format_llm_cost(self, response: Any) -> str:
+        input_tokens, output_tokens = self._extract_token_usage(response)
+        if input_tokens is None or output_tokens is None:
+            return ""
+        cost, currency = self.get_doubao_seed_2_0_pro_price(input_tokens, output_tokens)
+        return f"{cost:.4f} {currency}"
+
+    @staticmethod
+    def _extract_token_usage(response: Any) -> tuple[int | None, int | None]:
+        usage = getattr(response, "usage", None)
+        if usage is None:
+            return None, None
+
+        input_tokens = getattr(usage, "input_tokens", None)
+        output_tokens = getattr(usage, "output_tokens", None)
+
+        if input_tokens is None:
+            input_tokens = getattr(usage, "prompt_tokens", None)
+        if output_tokens is None:
+            output_tokens = getattr(usage, "completion_tokens", None)
+
+        if input_tokens is None or output_tokens is None:
+            return None, None
+        return int(input_tokens), int(output_tokens)
+
+    @staticmethod
+    def get_doubao_seed_2_0_pro_price(input_tokens: int, output_tokens: int) -> tuple[float, str]:
+        if input_tokens <= 32000:
+            input_price = 0.0032 / 1000
+        elif input_tokens <= 128000:
+            input_price = 0.0048 / 1000
+        else:
+            input_price = 0.0096 / 1000
+
+        if output_tokens <= 32000:
+            output_price = 0.0160 / 1000
+        elif output_tokens <= 128000:
+            output_price = 0.0240 / 1000
+        else:
+            output_price = 0.0480 / 1000
+
+        return input_price * input_tokens + output_price * output_tokens, "元"
 
     @staticmethod
     def _is_retryable_exception(exc: Exception) -> bool:

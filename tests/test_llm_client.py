@@ -39,7 +39,12 @@ class _FakeCompletions:
                             )()
                         },
                     )()
-                ]
+                ],
+                "usage": type(
+                    "Usage",
+                    (),
+                    {"prompt_tokens": 1000, "completion_tokens": 200},
+                )(),
             },
         )()
 
@@ -104,6 +109,7 @@ async def test_classify_returns_validated_result(tmp_path: Path) -> None:
     assert result.intent_city == "合肥"
     assert result.purchase_timeline == "下周"
     assert result.intent_model == "哈弗H6"
+    assert result.llm_cost == "0.0064 元"
 
 
 def test_parse_json_content_rejects_non_object(tmp_path: Path) -> None:
@@ -157,7 +163,12 @@ class _FallbackCompletions:
                             )()
                         },
                     )()
-                ]
+                ],
+                "usage": type(
+                    "Usage",
+                    (),
+                    {"input_tokens": 1500, "output_tokens": 100},
+                )(),
             },
         )()
 
@@ -189,6 +200,7 @@ async def test_classify_falls_back_when_response_format_is_unsupported(tmp_path:
     assert result.label == "中意向-敷衍回复"
     assert result.purchase_timeline == "过几个月"
     assert result.intent_model == "欧拉好猫"
+    assert result.llm_cost == "0.0064 元"
     assert len(client_backend.chat.completions.calls) == 2
     assert "response_format" in client_backend.chat.completions.calls[0]
     assert "response_format" not in client_backend.chat.completions.calls[1]

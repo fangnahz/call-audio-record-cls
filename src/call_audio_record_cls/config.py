@@ -14,7 +14,7 @@ class OssSettings(BaseModel):
     bucket: str = "yiwise-asr"
     input_prefix: str = "zhongqi-changcheng-recordings/"
     asr_prefix: str = "zhongqi-changcheng-asr/"
-    llm_prefix: str = "zhongqi-changcheng-llm-v2/"
+    llm_prefix: str = "zhongqi-changcheng-llm-v3/"
     region: str = "cn-hangzhou"
     endpoint: str = "oss-cn-hangzhou.aliyuncs.com"
     signed_url_ttl_seconds: int = 900
@@ -99,7 +99,7 @@ def get_settings() -> Settings:
         bucket=os.getenv("OSS_BUCKET", "yiwise-asr"),
         input_prefix=os.getenv("OSS_INPUT_PREFIX", "zhongqi-changcheng-recordings/"),
         asr_prefix=os.getenv("OSS_ASR_PREFIX", "zhongqi-changcheng-asr/"),
-        llm_prefix=os.getenv("OSS_LLM_PREFIX", "zhongqi-changcheng-llm-v2/"),
+        llm_prefix="zhongqi-changcheng-llm-v3/",
         region=os.getenv("OSS_REGION", "cn-hangzhou"),
         endpoint=os.getenv("OSS_ENDPOINT", "oss-cn-hangzhou.aliyuncs.com"),
         signed_url_ttl_seconds=int(os.getenv("OSS_SIGNED_URL_TTL_SECONDS", "900")),
